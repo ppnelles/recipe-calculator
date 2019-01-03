@@ -21,56 +21,12 @@
 
       <div id="calculator">     
 
-            <button class="lessServing">-</button><input type="text" name="serving" class="serving" value="5" /> <input type="hidden" id="previousServing" value="5"/><button class="moreServing">+</button> <span>servings</span>  
-
-            <h3>ingredients</h3>
+            <button class="lessServing">-</button><input type="text" name="serving" class="serving" value="5" /> <input type="hidden" id="previousServing" value="5"/><button class="moreServing">+</button> <span>servings</span>
             <ul class="ingredients">
             <li class="ingredient">
-            <input type="text" class="amount" value="560" />
-            <input type="text" name="ingredient-name" class="ingredient-name" value="ingredient name" />
-            <button class="delete">X</button>
-            </li>
-
-            <li class="ingredient">
-            <input type="text" class="amount" value="840" />
-            <input type="text" name="ingredient-name" class="ingredient-name" value="ingredient name" />
-            <button class="delete">X</button>
-            </li>
-
-            <li class="ingredient">
-            <input type="text" class="amount" value="8" />
-            <input type="text" name="ingredient-name" class="ingredient-name" value="ingredient name" /> 
-            <button class="delete">X</button>
-            </li>
-
-            <li class="ingredient">
-            <input type="text" class="amount" value="660" />
-            <input type="text" name="ingredient-name" class="ingredient-name" value="ingredient name" />
-            <button class="delete">X</button>
-            </li>
-
-            <li class="ingredient">
-            <input type="text" class="amount" value="4" />
-            <input type="text" name="ingredient-name" class="ingredient-name" value="ingredient name" />
-            <button class="delete">X</button>
-            </li>
-
-            <li class="ingredient">
-            <input type="text" class="amount" value="8" />
-            <input type="text" name="ingredient-name" class="ingredient-name" value="ingredient name" />
-            <button class="delete">X</button>
-            </li>
-
-            <li class="ingredient">
-            <input type="text" class="amount" value="180" />
-            <input type="text" name="ingredient-name" class="ingredient-name" value="ingredient name" />
-            <button class="delete">X</button>
-            </li>
-
-            <li class="ingredient">
-            <input type="text" name="serving" class="amount" value="460" />
-            <input type="text" name="ingredient-name" class="ingredient-name" value="ingredient name" />
-            <button class="delete">X</button>
+                <input type="number" class="amount" value="" placeholder="1" />
+                <input type="text" name="ingredient-name" class="ingredient-name" value="" placeholder="Ingredient name" />
+                <button class="delete" tabindex="-1">X</button>
             </li>
             </ul>
             <button class="add">+</button>
@@ -78,65 +34,69 @@
 
       <script type="text/javascript" src="./jquery.js"></script>
       <script type="text/javascript">
-        $(document).on('click', '.add', addIngredient);
 
-        $('.delete').click(function(){
-            $(this).parent().remove();
-        });
 
         $(function() {
-                  var previousValue = parseFloat($("#previousServing").val());
+            $(document).on('click', '.add', addIngredient);
+            $(document).on('click', '.delete', deleteIngredient);
+            $(document).on('keypress', function(e) {
+                var par = $(e.target).attr('class');
+                if ( e.which === 13 && par == 'ingredient-name') {
+                    addIngredient();
+                }
+            });
+            
+            var previousValue = parseFloat($("#previousServing").val());
 
-                  $('.serving').bind('keyup', function(event) {
-                      var newValue = parseFloat($(event.target).val());
-                      updateServings(previousValue, newValue)
-                  });
-
-                  $('.lessServing').click(function(){
-                    var previousValue = parseFloat($("#previousServing").val());
-                    var newValue = previousValue - 1;
-                    $('.serving').val(newValue);
-                    $('#previousServing').val(newValue);
-                    updateServings(previousValue, newValue)
-                  });
-
-                  $('.moreServing').click(function(){
-                    var previousValue = parseFloat($("#previousServing").val());
-                    var newValue = previousValue + 1;
-                    $('.serving').val(newValue);
-                    $('#previousServing').val(newValue);
-                    updateServings(previousValue, newValue)
-                  });
+            $('.serving').bind('keyup', function(event) {
+              var newValue = parseFloat($(event.target).val());
+              updateServings(previousValue, newValue)
             });
 
-            function addIngredient() {
-                 var newIngredient = '<li class="ingredient"> <input type="text" name="serving" class="amount" value="1" /> <input type="text" name="ingredient-name" class="ingredient-name" value="ingredient name" /> <button class="delete">X</button></li>';
-               /* $('.ingredients').append(
-                    $('<li>').attr('class','ingredient').append(
-                        $('<input>').attr({'type':'text','name':'serving','class':'amount', 'value':'1'}),
-                        $('<button>').attr({'class':'delete'})
-                    )
-                );*/
-                $('.ingredients').append(newIngredient);
-            };
+            $('.lessServing').click(function(){
+            var previousValue = parseFloat($("#previousServing").val());
+            var newValue = previousValue - 1;
+            $('.serving').val(newValue);
+            $('#previousServing').val(newValue);
+            updateServings(previousValue, newValue)
+            });
 
-            function updateServings(previousValue, newValue) {
-                    if (previousValue && newValue) {
-                        $('.ingredient').each(function(index, elem) {
-                            var ingredientNow = parseFloat($('.amount', elem).val());
-                            //alert(ingredientNow);
-                            var oldIngredientAmount = ingredientNow;
-                            var newIngredientAmount = oldIngredientAmount * newValue / previousValue;
-                            $('.amount', elem).val(roundToTwo(newIngredientAmount));
-                            //ingredientNow.text(roundToTwo(newIngredientAmount));
-                        });
-                        $('#previousServing').val(newValue);
-                    }
-            };
+            $('.moreServing').click(function(){
+            var previousValue = parseFloat($("#previousServing").val());
+            var newValue = previousValue + 1;
+            $('.serving').val(newValue);
+            $('#previousServing').val(newValue);
+            updateServings(previousValue, newValue)
+            });
+        });
 
-            function roundToTwo(num) {    
-                return +(Math.round(num + "e+2")  + "e-2");
-            };
+        function addIngredient() {
+             var newIngredient = '<li class="ingredient"> <input type="number" name="serving" class="amount" value="" placeholder="1" /> <input type="text" name="ingredient-name" class="ingredient-name" value="" placeholder="ingredient name" /> <button class="delete" tabindex="-1">X</button></li>';
+            $('.ingredients').append(newIngredient);
+            $('.amount').focus();
+        };
+
+        function deleteIngredient() {
+            $(this).parent().remove();
+        }
+
+        function updateServings(previousValue, newValue) {
+                if (previousValue && newValue) {
+                    $('.ingredient').each(function(index, elem) {
+                        var ingredientNow = parseFloat($('.amount', elem).val());
+                        //alert(ingredientNow);
+                        var oldIngredientAmount = ingredientNow;
+                        var newIngredientAmount = oldIngredientAmount * newValue / previousValue;
+                        $('.amount', elem).val(roundToTwo(newIngredientAmount));
+                        //ingredientNow.text(roundToTwo(newIngredientAmount));
+                    });
+                    $('#previousServing').val(newValue);
+                }
+        };
+
+        function roundToTwo(num) {    
+            return +(Math.round(num + "e+2")  + "e-2");
+        };
       </script>
     </body>
 </html>
